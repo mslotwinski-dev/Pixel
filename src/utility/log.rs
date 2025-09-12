@@ -14,12 +14,12 @@ impl Log {
         println!("{} - {}", "Info".cyan().bold(), message);
     }
 
-    pub fn warn(message: &str) {
-        println!("{} - {}", "Warning".yellow().bold(), message);
-    }
+    // pub fn warn(message: &str) {
+    //     println!("{} - {}", "Warning".yellow().bold(), message);
+    // }
 
     pub fn error(message: &str) {
-        println!("{} - {}", "Error".red().bold(), message);
+        panic!("{} - {}", "Error".red().bold(), message);
     }
 
     pub fn command(command: &str, message: &str) {
@@ -52,7 +52,7 @@ impl Log {
             .collect::<Vec<_>>()
             .join(" ");
 
-        let plain = command.to_string(); // z kolorami
+        let plain = command.to_string();
         let width = strip_ansi_codes(&plain).len();
 
         println!(

@@ -6,7 +6,6 @@ use crate::window::window::Window;
 pub fn run() -> eframe::Result {
     env_logger::init();
 
-    // Wczytanie obrazka ikony
     let icon_image = image::open("assets/icon.png").expect("Failed to open icon image");
     let icon_rgba = icon_image.to_rgba8();
     let (width, height) = icon_image.dimensions();
