@@ -44,7 +44,7 @@ fn main() {
                 "Rotate image clockwise by specified degrees",
             );
             Log::flag(
-                "--flip <horizontal|vertical>",
+                "--flip <horizontal|both|vertical>",
                 "Flip image horizontally or vertically",
             );
             Log::flag(
@@ -55,7 +55,6 @@ fn main() {
             Log::flag("--grayscale", "Convert image to grayscale");
             Log::flag("--invert", "Invert image colors");
             Log::flag("--sepia", "Apply sepia tone to image");
-
             Log::flag("--brightness <amount -100..100>", "Adjust image brightness");
             Log::flag("--contrast <amount -100..100>", "Adjust image contrast");
             Log::flag("--saturation <amount -100..100>", "Adjust image saturation");
@@ -86,15 +85,10 @@ fn main() {
 
             println!("Additional CLI flags:");
 
-            Log::flag(
-                "--format <png|jpg|bmp|gif>",
-                "Convert image to specified format",
-            );
-            Log::flag("--quality <1..100>", "Set output image quality (JPEG only)");
-            Log::flag(
-                "--batch",
-                "Apply transformations to all images in folder (input must be a folder)",
-            );
+            // Log::flag(
+            //     "--batch",
+            //     "Apply transformations to all images in folder (input must be a folder)",
+            // );
             Log::flag("--output <file>", "Specify output file path");
         }
         "--version" | "-v" => {
@@ -108,8 +102,9 @@ fn main() {
             } else {
                 let input_path = input.to_string();
                 let flags = &args[2..];
+                let flags: Vec<&str> = flags.iter().map(|s| s.as_str()).collect();
 
-                start::process_image(&input_path, flags);
+                start::process_image(&input_path, &flags);
             }
         }
     }

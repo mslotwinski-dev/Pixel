@@ -14,9 +14,9 @@ impl Log {
         println!("{} - {}", "Info".cyan().bold(), message);
     }
 
-    // pub fn warn(message: &str) {
-    //     println!("{} - {}", "Warning".yellow().bold(), message);
-    // }
+    pub fn warn(message: &str) {
+        println!("{} - {}", "Warning".yellow().bold(), message);
+    }
 
     pub fn error(message: &str) {
         panic!("{} - {}", "Error".red().bold(), message);

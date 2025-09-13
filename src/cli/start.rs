@@ -1,66 +1,112 @@
-use crate::image::tech::size;
+use crate::image::tech;
 use crate::tools::open::open_image;
+use crate::tools::save::SaveService;
 use crate::utility::log::Log;
+use crate::utility::parse::{parse_directions, parse_u32};
 
-pub fn process_image(input_path: &str, flags: &[String]) {
+pub fn process_image(input_path: &str, flags: &[&str]) {
     Log::info(&format!("Processing image: {}", input_path));
     Log::info(&format!("With flags: {:?}", flags));
 
     let mut img = open_image(input_path);
+    let mut save_service = SaveService::new(input_path);
 
-    run_flags(flags, &mut img);
+    run_flags(flags, &mut img, &mut save_service);
 
-    let output_path = "output.png";
-    match img.save(output_path) {
-        Ok(_) => Log::info(&format!("Image saved to {}", output_path)),
-        Err(e) => Log::error(&format!("Failed to save image: {}", e)),
-    }
+    save_service.save(&img);
 }
 
-fn run_flags(flags: &[String], img: &mut image::DynamicImage) {
-    let mut left_flags = flags;
+fn run_flags(mut flags: &[&str], img: &mut image::DynamicImage, save_service: &mut SaveService) {
+    while !flags.is_empty() {
+        match flags {
+            // <------------------------ Technical ------------------------>
+            ["--resize", width, height, rest @ ..] if !height.starts_with('-') => {
+                Log::info(&format!("Resizing image to {}x{}", width, height));
 
-    match left_flags {
-        [flag, percentage] if flag == "--resize" => {
-            Log::info(&format!("Resizing image to {}%", percentage));
+                if let (Some(w), Some(h)) =
+                    (parse_u32(width, "--resize"), parse_u32(height, "--resize"))
+                {
+                    tech::resize_image(img, w, h);
+                }
 
-            let percentage: u32 = percentage.parse().unwrap_or_else(|_| {
-                Log::error(
-                    "Invalid percentage provided for --resize flag. Image will remain unchanged.",
-                );
-                0
-            });
+                flags = rest;
+            }
 
-            size::resize_image_percentage(img, percentage);
+            ["--resize", percentage, rest @ ..] => {
+                Log::info(&format!("Resizing image to {}%", percentage));
 
-            left_flags = &left_flags[2..];
+                if let Some(p) = parse_u32(percentage, "--resize") {
+                    tech::resize_image_percentage(img, p);
+                }
+
+                flags = rest;
+            }
+
+            ["--rotate", degrees, rest @ ..] => {
+                Log::info(&format!("Rotating image by {} degrees", degrees));
+                if let Some(p) = parse_u32(degrees, "--rotate") {
+                    if p % 90 != 0 {
+                        Log::warn(
+                            "Rotation must be a multiple of 90. Image will remain unchanged.",
+                        );
+                    } else {
+                        tech::rotate_image(img, p);
+                    }
+                }
+
+                flags = rest;
+            }
+
+            ["--flip", direction, rest @ ..] => {
+                Log::info(&format!("Flipping image in {} direction", direction));
+
+                if let Some((horizontal, vertical)) = parse_directions(direction) {
+                    tech::flip_image(img, horizontal, vertical);
+                }
+
+                flags = rest;
+            }
+
+            ["--crop", x, y, width, height, rest @ ..] if !height.starts_with('-') => {
+                Log::info(&format!(
+                    "Cropping image at ({}, {}) with size {}x{}",
+                    x, y, width, height
+                ));
+
+                if let (Some(x), Some(y), Some(w), Some(h)) = (
+                    parse_u32(x, "--crop"),
+                    parse_u32(y, "--crop"),
+                    parse_u32(width, "--crop"),
+                    parse_u32(height, "--crop"),
+                ) {
+                    tech::crop_image(img, x, y, w, h);
+                }
+
+                flags = rest;
+            }
+
+            // <------------------------ Color ------------------------>
+
+            // <------------------------ Filter ------------------------>
+
+            // <------------------------ Shape ------------------------>
+
+            // <------------------------ Data ------------------------>
+            ["--output", direction, rest @ ..] => {
+                Log::info(&format!("Setting output path to {}", direction));
+                save_service.output = Some(direction.to_string());
+                flags = rest;
+            }
+
+            // <------------------------ Errors ------------------------>
+            [arg, rest @ ..] => {
+                Log::warn(&format!("Unknown flag provided: {}. Skipping.", arg));
+
+                flags = rest;
+            }
+
+            // <------------------------ Break ------------------------>
+            [] => break,
         }
-
-        [flag, width, height] if flag == "--resize" => {
-            Log::info(&format!("Resizing image to {}x{}", width, height));
-            let width: u32 = width.parse().unwrap_or_else(|_| {
-                Log::error(
-                    "Invalid width provided for --resize flag. Image will remain unchanged.",
-                );
-                0
-            });
-            let height: u32 = height.parse().unwrap_or_else(|_| {
-                Log::error(
-                    "Invalid height provided for --resize flag. Image will remain unchanged.",
-                );
-                0
-            });
-
-            size::resize_image(img, width, height);
-
-            left_flags = &left_flags[3..];
-        }
-        _ => {
-            Log::error("Wrong flags provided. Image will remain unchanged.");
-        }
-    }
-
-    if !left_flags.is_empty() {
-        run_flags(left_flags, img);
     }
 }
