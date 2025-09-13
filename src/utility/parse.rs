@@ -10,6 +10,26 @@ pub fn parse_u32(value: &str, flag: &str) -> Option<u32> {
     }
 }
 
+pub fn parse_i32(value: &str, flag: &str) -> Option<i32> {
+    match value.parse::<i32>() {
+        Ok(val) => Some(val),
+        Err(_) => {
+            Log::warn(&format!("Invalid arguments for {} flag. Skipping.", flag));
+            None
+        }
+    }
+}
+
+pub fn parse_f32(value: &str, flag: &str) -> Option<f32> {
+    match value.parse::<f32>() {
+        Ok(val) => Some(val),
+        Err(_) => {
+            Log::warn(&format!("Invalid arguments for {} flag. Skipping.", flag));
+            None
+        }
+    }
+}
+
 pub fn parse_directions(direction: &str) -> Option<(bool, bool)> {
     match direction {
         "horizontal" => Some((true, false)),
