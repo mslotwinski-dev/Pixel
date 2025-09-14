@@ -16,9 +16,9 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     if args.len() == 1 {
-        Log::error("No arguments provided. Use --help for assistance.");
+        // Log::error("No arguments provided. Use --help for assistance.");
 
-        // run().unwrap();
+        run().unwrap();
         return;
     }
 

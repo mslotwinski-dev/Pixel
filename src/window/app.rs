@@ -6,7 +6,7 @@ use crate::window::window::Window;
 pub fn run() -> eframe::Result {
     env_logger::init();
 
-    let icon_image = image::open("assets/icon.png").expect("Failed to open icon image");
+    let icon_image = image::open("src/assets/icon.png").expect("Failed to open icon image");
     let icon_rgba = icon_image.to_rgba8();
     let (width, height) = icon_image.dimensions();
 
@@ -29,7 +29,7 @@ pub fn run() -> eframe::Result {
         Box::new(|cc| {
             egui_extras::install_image_loaders(&cc.egui_ctx);
 
-            Ok(Box::<Window>::default())
+            Ok(Box::new(Window::new(cc)))
         }),
     )
 }
