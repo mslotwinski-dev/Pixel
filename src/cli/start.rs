@@ -1,4 +1,4 @@
-use crate::image::{color, shape, tech};
+use crate::image::{color, filter, shape, tech};
 use crate::tools::open::open_image;
 use crate::tools::save::SaveService;
 use crate::utility::log::Log;
@@ -156,6 +156,13 @@ fn run_flags(mut flags: &[&str], img: &mut image::DynamicImage, save_service: &m
             }
 
             // <------------------------ Filter ------------------------>
+            ["--filter", filter, rest @ ..] => {
+                Log::info(&format!("Applying filter: {}", filter));
+
+                filter::apply_filter(img, filter);
+
+                flags = rest;
+            }
 
             // <------------------------ Data ------------------------>
             ["--output", direction, rest @ ..] => {

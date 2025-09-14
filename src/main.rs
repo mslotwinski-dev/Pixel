@@ -18,7 +18,7 @@ fn main() {
     if args.len() == 1 {
         Log::error("No arguments provided. Use --help for assistance.");
 
-        run().unwrap();
+        // run().unwrap();
         return;
     }
 
@@ -78,10 +78,10 @@ fn main() {
             Log::flag("- miami", "");
             Log::flag("- rio", "");
             Log::flag("- tokio", "");
-            Log::flag("- shanghai", "");
+            // Log::flag("- shanghai", "");
             Log::flag("- dubai", "");
-            Log::flag("- cairo", "");
-            Log::flag("- lagos", "");
+            // Log::flag("- cairo", "");
+            // Log::flag("- lagos", "");
 
             println!("Additional CLI flags:");
 
