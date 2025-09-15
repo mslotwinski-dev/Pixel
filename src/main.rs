@@ -18,7 +18,7 @@ fn main() {
     if args.len() == 1 {
         // Log::error("No arguments provided. Use --help for assistance.");
 
-        run().unwrap();
+        run(None).unwrap();
         return;
     }
 
@@ -96,9 +96,9 @@ fn main() {
         }
         input => {
             if args.len() == 2 {
-                let _input_path = input.to_string();
+                let input_path = input.to_string();
 
-                run().unwrap();
+                run(Some(input_path)).unwrap();
             } else {
                 let input_path = input.to_string();
                 let flags = &args[2..];

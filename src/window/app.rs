@@ -3,7 +3,7 @@ use image::GenericImageView;
 
 use crate::window::window::Window;
 
-pub fn run() -> eframe::Result {
+pub fn run(input_path: Option<String>) -> eframe::Result {
     env_logger::init();
 
     let icon_image = image::open("src/assets/icon.png").expect("Failed to open icon image");
@@ -29,7 +29,7 @@ pub fn run() -> eframe::Result {
         Box::new(|cc| {
             egui_extras::install_image_loaders(&cc.egui_ctx);
 
-            Ok(Box::new(Window::new(cc)))
+            Ok(Box::new(Window::new(cc, input_path)))
         }),
     )
 }

@@ -1,15 +1,21 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use eframe::egui::{
-    self, Align, Color32, FontData, FontDefinitions, FontFamily, FontId, Frame, Layout, RichText,
-    Vec2, vec2,
+    self, Align, Button, Color32, ColorImage, FontData, FontDefinitions, FontFamily, FontId, Frame,
+    Layout, Margin, RichText, TextureHandle, TextureOptions, Vec2, vec2,
 };
-use image;
+use image::{self, DynamicImage};
+use rfd;
 
-pub struct Window {}
+use crate::tools::open::open_image;
+
+pub struct Window {
+    input_path: Option<String>,
+    texture: Option<TextureHandle>,
+}
 
 impl Window {
-    pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
+    pub fn new(cc: &eframe::CreationContext<'_>, input_path: Option<String>) -> Self {
         let mut fonts = FontDefinitions::default();
 
         fonts.font_data.insert(
@@ -24,13 +30,32 @@ impl Window {
 
         cc.egui_ctx.set_fonts(fonts);
 
-        Self {}
+        if let Some(input_path) = &input_path {
+            let img = open_image(input_path);
+            let color_image = dynamic_image_to_color_image(&img);
+            let texture =
+                cc.egui_ctx
+                    .load_texture("dyn-img", color_image, TextureOptions::default());
+
+            return Self {
+                input_path: Some(input_path.clone()),
+                texture: Some(texture),
+            };
+        }
+
+        Self {
+            input_path: None,
+            texture: None,
+        }
     }
 }
 
 impl Default for Window {
     fn default() -> Self {
-        Self {}
+        Self {
+            input_path: None,
+            texture: None,
+        }
     }
 }
 
@@ -61,19 +86,92 @@ impl eframe::App for Window {
             });
         });
 
-        egui::CentralPanel::default().show(ctx, |ui| {
-            ui.centered_and_justified(|ui| {
-                ui.add_space(10.0);
+        if let Some(input_path) = &self.input_path {
+            egui::CentralPanel::default().show(ctx, |ui| {
+                ui.label(format!("Loaded image: {}", input_path));
 
-                ui.label("Podtytuł");
+                Frame::default()
+                    .fill(Color32::from_rgb(0, 180, 130))
+                    .inner_margin(Margin::symmetric(20, 20))
+                    .corner_radius(5.0)
+                    .show(ui, |ui| {
+                        if let Some(texture) = &self.texture {
+                            let max_size = vec2(400.0, 400.0);
+                            let scaled = fit_size(texture.size_vec2(), max_size);
+
+                            ui.image((texture.id(), scaled));
+                        }
+                    });
             });
-        });
+        } else {
+            egui::CentralPanel::default().show(ctx, |ui| {
+                ui.centered_and_justified(|ui| {
+                    ui.set_max_height(400.0);
+                    ui.with_layout(Layout::top_down(Align::Center), |ui| {
+                        ui.label(
+                            RichText::new("Welcome to Pixel!")
+                                .color(Color32::from_rgb(0, 180, 130))
+                                .font(FontId::new(42.0, FontFamily::Name("pixel_font".into())))
+                                .strong(),
+                        );
+
+                        ui.label(RichText::new("Select file to edit!").size(20.0).strong());
+
+                        ui.add_space(20.0);
+
+                        Frame::new()
+                            .fill(Color32::from_rgb(0, 180, 130))
+                            .inner_margin(Margin::symmetric(20, 10))
+                            .corner_radius(5.0)
+                            .show(ui, |ui| {
+                                ui.set_max_width(200.0);
+                                ui.add_space(5.0);
+
+                                if ui
+                                    .add(
+                                        Button::new(
+                                            RichText::new("Open File")
+                                                .color(Color32::WHITE)
+                                                .font(FontId::new(
+                                                    24.0,
+                                                    FontFamily::Name("pixel_font".into()),
+                                                ))
+                                                .strong(),
+                                        )
+                                        .frame(false),
+                                    )
+                                    .clicked()
+                                {
+                                    if let Some(path) = rfd::FileDialog::new()
+                                        .add_filter(
+                                            "Image",
+                                            &["png", "jpg", "jpeg", "bmp", "gif", "tiff"],
+                                        )
+                                        .set_title("Open Image")
+                                        .pick_file()
+                                    {
+                                        self.input_path = Some(path.display().to_string());
+
+                                        let img = open_image(&self.input_path.as_ref().unwrap());
+                                        let color_image = dynamic_image_to_color_image(&img);
+                                        self.texture = Some(ctx.load_texture(
+                                            "dyn-img",
+                                            color_image,
+                                            TextureOptions::default(),
+                                        ));
+                                    }
+                                }
+                            });
+                    });
+                });
+            });
+        }
 
         egui::TopBottomPanel::bottom("bottom_panel")
             .max_height(44.0)
             .show(ctx, |ui| {
                 Frame::default().inner_margin(10.0).show(ui, |ui| {
-                    ui.horizontal(|ui| {
+                    ui.horizontal_centered(|ui| {
                         ui.label(
                             RichText::new("by Mateusz Slotwinski")
                                 .color(Color32::from_rgb(0, 180, 130))
@@ -110,4 +208,23 @@ fn parse_img<'a>(bytes: &'a [u8], ctx: &'a egui::Context) -> egui::Image<'a> {
     let texture = ctx.load_texture("icon", color_image, Default::default());
 
     egui::Image::new(&texture).fit_to_original_size(1.0)
+}
+
+fn dynamic_image_to_color_image(img: &DynamicImage) -> ColorImage {
+    let rgba = img.to_rgba8();
+    let size = [rgba.width() as usize, rgba.height() as usize];
+    let pixels = rgba.into_vec();
+    ColorImage::from_rgba_unmultiplied(size, &pixels)
+}
+
+// fn add_dynamic_image(ui: &mut Ui, ctx: &egui::Context, img: &DynamicImage) -> TextureHandle {
+//     let color_image = dynamic_image_to_color_image(img);
+//     let texture = ctx.load_texture("dyn-img", color_image, TextureOptions::default());
+//     ui.image((texture.id(), texture.size_vec2()));
+//     texture
+// }
+
+fn fit_size(original: egui::Vec2, max: egui::Vec2) -> egui::Vec2 {
+    let scale = (max.x / original.x).min(max.y / original.y).min(1.0);
+    original * scale
 }
