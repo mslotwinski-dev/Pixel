@@ -1,2 +1,5 @@
 pub mod app;
-mod window;
+pub mod interface;
+pub mod modes;
+pub mod update;
+pub mod window;
