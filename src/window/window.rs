@@ -86,22 +86,121 @@ impl eframe::App for Window {
             });
         });
 
-        if let Some(input_path) = &self.input_path {
+        if self.input_path.is_some() {
+            let input_path = self.input_path.clone().unwrap();
             egui::CentralPanel::default().show(ctx, |ui| {
-                ui.label(format!("Loaded image: {}", input_path));
+                ui.horizontal(|ui| {
+                    ui.add_space(10.0);
 
-                Frame::default()
-                    .fill(Color32::from_rgb(0, 180, 130))
-                    .inner_margin(Margin::symmetric(20, 20))
-                    .corner_radius(5.0)
-                    .show(ui, |ui| {
-                        if let Some(texture) = &self.texture {
-                            let max_size = vec2(400.0, 400.0);
-                            let scaled = fit_size(texture.size_vec2(), max_size);
+                    if ui
+                        .add(
+                            parse_img(include_bytes!("../assets/icons/new.png"), ctx)
+                                .fit_to_exact_size(vec2(25.0, 25.0))
+                                .sense(egui::Sense::click()),
+                        )
+                        .on_hover_text("Close File")
+                        .on_hover_cursor(egui::CursorIcon::PointingHand)
+                        .clicked()
+                    {
+                        self.input_path = None;
+                        self.texture = None;
+                    }
 
-                            ui.image((texture.id(), scaled));
+                    ui.add_space(10.0);
+
+                    if ui
+                        .add(
+                            parse_img(include_bytes!("../assets/icons/open.png"), ctx)
+                                .fit_to_exact_size(vec2(25.0, 25.0))
+                                .sense(egui::Sense::click()),
+                        )
+                        .on_hover_text("Open File")
+                        .on_hover_cursor(egui::CursorIcon::PointingHand)
+                        .clicked()
+                    {
+                        if let Some(path) = rfd::FileDialog::new()
+                            .add_filter("Image", &["png", "jpg", "jpeg", "bmp", "gif", "tiff"])
+                            .set_title("Open Image")
+                            .pick_file()
+                        {
+                            self.input_path = Some(path.display().to_string());
+
+                            let img = open_image(&self.input_path.as_ref().unwrap());
+                            let color_image = dynamic_image_to_color_image(&img);
+                            self.texture = Some(ctx.load_texture(
+                                "dyn-img",
+                                color_image,
+                                TextureOptions::default(),
+                            ));
                         }
+                    }
+
+                    ui.add_space(10.0);
+                    ui.separator();
+                    ui.add_space(10.0);
+
+                    ui.label(format!("Loaded image: {}", input_path));
+                });
+                ui.separator();
+
+                Frame::default().corner_radius(5.0).show(ui, |ui| {
+                    ui.set_max_height(ui.available_height() - 50.0);
+                    ui.with_layout(Layout::right_to_left(egui::Align::Center), |ui| {
+                        Frame::default()
+                            .fill(Color32::from_rgb(0, 180, 130))
+                            .inner_margin(Margin::symmetric(10, 30))
+                            .outer_margin(Margin::symmetric(10, 10))
+                            .corner_radius(5.0)
+                            .show(ui, |ui| {
+                                ui.set_width(60.0);
+                                ui.set_min_height(ui.available_height());
+                                // ui.set_height(60.0);
+                                // ui.set_min_height(550.0);
+
+                                ui.vertical_centered(|ui| {
+                                    ui.add(
+                                        parse_img(include_bytes!("../assets/icons/tech.png"), ctx)
+                                            .fit_to_exact_size(vec2(40.0, 40.0)),
+                                    );
+                                    ui.add(
+                                        parse_img(include_bytes!("../assets/icons/color.png"), ctx)
+                                            .fit_to_exact_size(vec2(40.0, 40.0)),
+                                    );
+                                    ui.add(
+                                        parse_img(include_bytes!("../assets/icons/shape.png"), ctx)
+                                            .fit_to_exact_size(vec2(40.0, 40.0)),
+                                    );
+                                    ui.add(
+                                        parse_img(
+                                            include_bytes!("../assets/icons/filter.png"),
+                                            ctx,
+                                        )
+                                        .fit_to_exact_size(vec2(40.0, 40.0)),
+                                    );
+                                });
+                            });
+                        ui.separator();
+                        ui.with_layout(Layout::top_down(egui::Align::Center), |ui| {
+                            Frame::default()
+                                // .fill(Color32::from_rgb(0, 180, 130))
+                                .stroke(egui::Stroke::new(2.0, Color32::from_rgb(0, 180, 130)))
+                                .inner_margin(Margin::symmetric(10, 10))
+                                .outer_margin(Margin::symmetric(10, 10))
+                                .corner_radius(5.0)
+                                .show(ui, |ui| {
+                                    ui.set_max_width(ui.available_width());
+                                    ui.set_min_height(ui.available_height());
+                                    if let Some(texture) = &self.texture {
+                                        let max_size =
+                                            vec2(ui.available_width(), ui.available_height());
+                                        let scaled = fit_size(texture.size_vec2(), max_size);
+
+                                        ui.image((texture.id(), scaled));
+                                    }
+                                });
+                        });
                     });
+                });
             });
         } else {
             egui::CentralPanel::default().show(ctx, |ui| {
@@ -168,12 +267,12 @@ impl eframe::App for Window {
         }
 
         egui::TopBottomPanel::bottom("bottom_panel")
-            .max_height(44.0)
+            // .max_height(44.0)
             .show(ctx, |ui| {
                 Frame::default().inner_margin(10.0).show(ui, |ui| {
                     ui.horizontal_centered(|ui| {
                         ui.label(
-                            RichText::new("by Mateusz Slotwinski")
+                            RichText::new("by Mateusz Słotwiński")
                                 .color(Color32::from_rgb(0, 180, 130))
                                 .font(FontId::new(24.0, FontFamily::Name("pixel_font".into())))
                                 .strong(),
@@ -205,7 +304,7 @@ fn parse_img<'a>(bytes: &'a [u8], ctx: &'a egui::Context) -> egui::Image<'a> {
     let image = image::load_from_memory(&bytes).unwrap().to_rgba8();
     let size = [image.width() as _, image.height() as _];
     let color_image = egui::ColorImage::from_rgba_unmultiplied(size, &image);
-    let texture = ctx.load_texture("icon", color_image, Default::default());
+    let texture = ctx.load_texture("icon", color_image, egui::TextureOptions::LINEAR);
 
     egui::Image::new(&texture).fit_to_original_size(1.0)
 }
