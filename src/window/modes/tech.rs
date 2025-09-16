@@ -40,20 +40,32 @@ pub fn render(ui: &mut egui::Ui, ctx: &egui::Context, win: &mut Window) {
     );
 
     if resize.clicked() {
-        win.dialogs.resize = true;
+        win.dialogs.resize = !win.dialogs.resize;
     }
+
+    if rotate.clicked() {
+        win.dialogs.rotate = !win.dialogs.rotate;
+    }
+
+    if flip.clicked() {
+        win.dialogs.flip = !win.dialogs.flip;
+    }
+
+    if crop.clicked() {
+        win.dialogs.crop = !win.dialogs.crop;
+    }
+
+    // Dialogs
 
     if win.dialogs.resize {
         dialogs::tech::resize(ctx, win);
     }
 
-    if rotate.clicked() {
-        win.dialogs.rotate = true;
+    if win.dialogs.rotate {
+        dialogs::tech::rotate(ctx, win);
     }
-    if flip.clicked() {
-        win.dialogs.flip = true;
-    }
-    if crop.clicked() {
-        win.dialogs.crop = true;
+
+    if win.dialogs.flip {
+        dialogs::tech::flip(ctx, win);
     }
 }
