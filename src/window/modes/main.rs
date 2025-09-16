@@ -63,10 +63,10 @@ pub fn render(ui: &mut egui::Ui, ctx: &egui::Context, win: &mut Window) {
     )
     .clicked()
     {
-        win.show_reset_dialog = true;
+        win.dialogs.reset = true;
     }
 
-    if win.show_reset_dialog {
+    if win.dialogs.reset {
         egui::Window::new("Reset Image")
             .collapsible(false)
             .resizable(false)
@@ -80,12 +80,12 @@ pub fn render(ui: &mut egui::Ui, ctx: &egui::Context, win: &mut Window) {
                             win.image = Some(orig.clone());
                             win.update_texture(ctx);
                         }
-                        win.show_reset_dialog = false;
+                        win.dialogs.reset = false;
                     }
                     ui.add_space(10.0);
 
                     if ui.button("No").clicked() {
-                        win.show_reset_dialog = false;
+                        win.dialogs.reset = false;
                     }
                 });
             });

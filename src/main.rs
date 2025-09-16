@@ -95,12 +95,11 @@ fn main() {
             Log::info(&format!("Version: {}", env!("CARGO_PKG_VERSION")));
         }
         input => {
-            if args.len() == 2 {
-                let input_path = input.to_string();
+            let input_path = input.to_string();
 
+            if args.len() == 2 {
                 run(Some(input_path)).unwrap();
             } else {
-                let input_path = input.to_string();
                 let flags = &args[2..];
                 let flags: Vec<&str> = flags.iter().map(|s| s.as_str()).collect();
 

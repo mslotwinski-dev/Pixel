@@ -3,7 +3,7 @@ use crate::window::window::Window;
 
 use eframe::egui::{self};
 
-pub fn render(ui: &mut egui::Ui, ctx: &egui::Context, _win: &mut Window) {
+pub fn render(ui: &mut egui::Ui, ctx: &egui::Context, win: &mut Window) {
     let grayscale = icon_button(
         ui,
         ctx,
@@ -57,21 +57,21 @@ pub fn render(ui: &mut egui::Ui, ctx: &egui::Context, _win: &mut Window) {
     );
 
     if grayscale.clicked() {
-        // __win.mode = 1;
+        win.dialogs.grayscale = true;
     }
     if invert.clicked() {
-        // __win.mode = 2;
+        win.dialogs.invert = true;
     }
     if sepia.clicked() {
-        // __win.mode = 1;
+        win.dialogs.sepia = true;
     }
     if brightness.clicked() {
-        // __win.mode = 2;
+        win.dialogs.brightness = true;
     }
     if contrast.clicked() {
-        // __win.mode = 1;
+        win.dialogs.contrast = true;
     }
     if saturation.clicked() {
-        // __win.mode = 2;
+        win.dialogs.saturation = true;
     }
 }

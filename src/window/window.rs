@@ -5,6 +5,7 @@ use image::DynamicImage;
 
 use crate::tools::img::dynamic_image_to_color_image;
 use crate::tools::open::open_image;
+use crate::window::dialogs::Dialogs;
 
 pub struct Window {
     pub input_path: Option<String>,
@@ -12,7 +13,8 @@ pub struct Window {
     pub image: Option<DynamicImage>,
     pub original_image: Option<DynamicImage>,
     pub texture: Option<TextureHandle>,
-    pub show_reset_dialog: bool,
+
+    pub dialogs: Dialogs,
 }
 
 impl Window {
@@ -45,7 +47,7 @@ impl Window {
                 original_image: Some(img),
                 texture: Some(texture),
                 mode: 0,
-                show_reset_dialog: false,
+                dialogs: Dialogs::default(),
             };
         }
 
@@ -55,7 +57,7 @@ impl Window {
             original_image: None,
             texture: None,
             mode: 0,
-            show_reset_dialog: false,
+            dialogs: Dialogs::default(),
         }
     }
 
@@ -76,7 +78,7 @@ impl Default for Window {
             original_image: None,
             texture: None,
             mode: 0,
-            show_reset_dialog: false,
+            dialogs: Dialogs::default(),
         }
     }
 }

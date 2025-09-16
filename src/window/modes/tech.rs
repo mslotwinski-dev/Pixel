@@ -1,9 +1,10 @@
 use crate::utility::ui::icon_button;
+use crate::window::dialogs;
 use crate::window::window::Window;
 
 use eframe::egui::{self};
 
-pub fn render(ui: &mut egui::Ui, ctx: &egui::Context, _win: &mut Window) {
+pub fn render(ui: &mut egui::Ui, ctx: &egui::Context, win: &mut Window) {
     let resize = icon_button(
         ui,
         ctx,
@@ -39,15 +40,20 @@ pub fn render(ui: &mut egui::Ui, ctx: &egui::Context, _win: &mut Window) {
     );
 
     if resize.clicked() {
-        // win.mode = 1;
+        win.dialogs.resize = true;
     }
+
+    if win.dialogs.resize {
+        dialogs::tech::resize(ctx, win);
+    }
+
     if rotate.clicked() {
-        // win.mode = 2;
+        win.dialogs.rotate = true;
     }
     if flip.clicked() {
-        // win.mode = 3;
+        win.dialogs.flip = true;
     }
     if crop.clicked() {
-        // win.mode = 4;
+        win.dialogs.crop = true;
     }
 }

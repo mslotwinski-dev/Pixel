@@ -3,7 +3,7 @@ use crate::window::window::Window;
 
 use eframe::egui::{self};
 
-pub fn render(ui: &mut egui::Ui, ctx: &egui::Context, _win: &mut Window) {
+pub fn render(ui: &mut egui::Ui, ctx: &egui::Context, win: &mut Window) {
     let blur = icon_button(
         ui,
         ctx,
@@ -21,9 +21,9 @@ pub fn render(ui: &mut egui::Ui, ctx: &egui::Context, _win: &mut Window) {
     );
 
     if blur.clicked() {
-        // win.mode = 1;
+        win.dialogs.blur = true
     }
     if sharpen.clicked() {
-        // win.mode = 2;
+        win.dialogs.sharpen = true;
     }
 }
