@@ -18,12 +18,17 @@ pub fn render(ctx: &egui::Context, win: &mut Window) {
                     .corner_radius(5.0)
                     .show(ui, |ui| {
                         ui.set_width(60.0);
-                        ui.set_min_height(ui.available_height());
-                        ui.set_style(egui::Style {
-                            visuals: egui::Visuals::light(),
-                            ..egui::Style::default()
-                        });
-                        side_menu::render(ui, ctx, win);
+
+                        egui::ScrollArea::vertical()
+                            .auto_shrink([false; 2]) // żeby menu nie znikało przy małej zawartości
+                            .show(ui, |ui| {
+                                ui.set_style(egui::Style {
+                                    visuals: egui::Visuals::light(),
+                                    ..egui::Style::default()
+                                });
+
+                                side_menu::render(ui, ctx, win);
+                            });
                     });
 
                 ui.separator();

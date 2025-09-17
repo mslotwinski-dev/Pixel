@@ -2,6 +2,8 @@
 name = "pixel"
 version = "0.1.0"
 edition = "2024"
+authors = ["Mateusz Słotwiński"]
+license = "MIT"
 
 [dependencies]
 colored = "3.0.0"
@@ -13,3 +15,12 @@ image = "0.25.8"
 photon-rs = "0.3.3"
 rand = "0.9.2"
 rfd = "0.15.4"
+
+[package.metadata.wix]
+name = "Pixel"
+upgrade-guid = "79076763-79b2-4610-b14f-bad3e5992eb3"
+path-guid = "a3d55a28-90ab-4ca7-afa2-ba3c30c57329"
+extensions = [
+  { extension = "jpg", progid = "Pixel", icon = "assets/icon.ico", open_with = true },
+  { extension = "png", progid = "Pixel", icon = "assets/icon.ico", open_with = true },
+]
