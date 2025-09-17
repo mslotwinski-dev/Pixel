@@ -1,4 +1,5 @@
 pub mod color;
+pub mod shape;
 pub mod tech;
 
 pub struct Dialogs {

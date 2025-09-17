@@ -40,6 +40,8 @@ pub fn render(ui: &mut egui::Ui, ctx: &egui::Context, win: &mut Window) {
             win.input_path = Some(path.display().to_string());
             let img = open_image(&win.input_path.as_ref().unwrap());
             let color_image = dynamic_image_to_color_image(&img);
+            win.image = Some(img);
+            win.original_image = win.image.clone();
             win.texture = Some(ctx.load_texture("dyn-img", color_image, TextureOptions::default()));
         }
     }
