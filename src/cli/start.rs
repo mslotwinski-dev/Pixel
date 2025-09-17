@@ -2,7 +2,7 @@ use crate::image::{color, filter, shape, tech};
 use crate::tools::open::open_image;
 use crate::tools::save::SaveService;
 use crate::utility::log::Log;
-use crate::utility::parse::{parse_directions, parse_f32, parse_i32, parse_u32};
+use crate::utility::parse::{parse_directions, parse_f32, parse_u32};
 
 pub fn process_image(input_path: &str, flags: &[&str]) {
     Log::info(&format!("Processing image: {}", input_path));
@@ -107,7 +107,7 @@ fn run_flags(mut flags: &[&str], img: &mut image::DynamicImage, save_service: &m
             ["--brightness", value, rest @ ..] => {
                 Log::info(&format!("Brightening image by {}", value));
 
-                if let Some(v) = parse_i32(value, "--brightness") {
+                if let Some(v) = parse_u32(value, "--brightness") {
                     color::adjust_brightness(img, v);
                 }
 

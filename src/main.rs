@@ -55,9 +55,9 @@ fn main() {
             Log::flag("--grayscale", "Convert image to grayscale");
             Log::flag("--invert", "Invert image colors");
             Log::flag("--sepia", "Apply sepia tone to image");
-            Log::flag("--brightness <amount -100..100>", "Adjust image brightness");
-            Log::flag("--contrast <amount -100..100>", "Adjust image contrast");
-            Log::flag("--saturation <amount -100..100>", "Adjust image saturation");
+            Log::flag("--brightness <amount 0..200>", "Adjust image brightness");
+            Log::flag("--contrast <amount 0..200>", "Adjust image contrast");
+            Log::flag("--saturation <amount 0..200>", "Adjust image saturation");
 
             Log::flag("--blur <sigma>", "Apply Gaussian blur to the image");
             Log::flag("--sharpen <amount>", "Sharpen the image (light effect)");

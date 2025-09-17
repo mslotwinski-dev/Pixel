@@ -1,3 +1,4 @@
+pub mod color;
 pub mod tech;
 
 pub struct Dialogs {
@@ -8,9 +9,6 @@ pub struct Dialogs {
     pub flip: bool,
     pub crop: bool,
 
-    pub sepia: bool,
-    pub grayscale: bool,
-    pub invert: bool,
     pub brightness: bool,
     pub contrast: bool,
     pub saturation: bool,
@@ -29,9 +27,6 @@ impl Dialogs {
             flip: false,
             crop: false,
 
-            sepia: false,
-            grayscale: false,
-            invert: false,
             brightness: false,
             contrast: false,
             saturation: false,
