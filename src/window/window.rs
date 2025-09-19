@@ -1,5 +1,3 @@
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-
 use eframe::egui::{FontData, FontDefinitions, FontFamily, TextureHandle, TextureOptions};
 use image::DynamicImage;
 

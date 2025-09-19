@@ -6,7 +6,8 @@ use crate::window::window::Window;
 pub fn run(input_path: Option<String>) -> eframe::Result {
     env_logger::init();
 
-    let icon_image = image::open("src/assets/icon.png").expect("Failed to open icon image");
+    let icon_bytes = include_bytes!("../assets/icon.png");
+    let icon_image = image::load_from_memory(icon_bytes).expect("Failed to open icon image");
     let icon_rgba = icon_image.to_rgba8();
     let (width, height) = icon_image.dimensions();
 
