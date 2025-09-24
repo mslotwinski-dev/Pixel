@@ -17,10 +17,7 @@ $filters = @(
     "miami",
     "rio",
     "tokio",
-    "shanghai",
     "dubai",
-    "cairo",
-    "lagos"
 )
 
 $inputName = [System.IO.Path]::GetFileNameWithoutExtension($input)

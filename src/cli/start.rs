@@ -8,12 +8,13 @@ pub fn process_image(input_path: &str, flags: &[&str]) {
     Log::info(&format!("Processing image: {}", input_path));
     Log::info(&format!("With flags: {:?}", flags));
 
-    let mut img = open_image(input_path);
-    let mut save_service = SaveService::new(input_path);
+    if let Some(mut img) = open_image(input_path) {
+        let mut save_service = SaveService::new(input_path);
 
-    run_flags(flags, &mut img, &mut save_service);
+        run_flags(flags, &mut img, &mut save_service);
 
-    save_service.save(&img);
+        save_service.save(&img);
+    }
 }
 
 fn run_flags(mut flags: &[&str], img: &mut image::DynamicImage, save_service: &mut SaveService) {

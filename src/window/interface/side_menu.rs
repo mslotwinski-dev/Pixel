@@ -16,6 +16,7 @@ pub fn render(ui: &mut egui::Ui, ctx: &egui::Context, win: &mut Window) {
             .clicked()
             {
                 win.mode = 0;
+                ctx.request_repaint();
             }
             ui.add_space(10.0);
             ui.separator();

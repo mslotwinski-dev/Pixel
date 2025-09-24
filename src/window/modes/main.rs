@@ -40,15 +40,19 @@ pub fn render(ui: &mut egui::Ui, ctx: &egui::Context, win: &mut Window) {
 
     if tech.clicked() {
         win.mode = 1;
+        ctx.request_repaint();
     }
     if color.clicked() {
         win.mode = 2;
+        ctx.request_repaint();
     }
     if shape.clicked() {
         win.mode = 3;
+        ctx.request_repaint();
     }
     if filter.clicked() {
         win.mode = 4;
+        ctx.request_repaint();
     }
 
     ui.add_space(20.0);

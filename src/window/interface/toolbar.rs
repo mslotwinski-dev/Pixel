@@ -1,9 +1,8 @@
-use crate::tools::img::dynamic_image_to_color_image;
-use crate::tools::open::open_image;
+use crate::tools::open::open_image_gui;
 use crate::utility::ui::icon_button_sized;
 use crate::window::window::Window;
 
-use eframe::egui::{self, TextureOptions};
+use eframe::egui;
 
 pub fn render(ui: &mut egui::Ui, ctx: &egui::Context, win: &mut Window) {
     ui.add_space(10.0);
@@ -32,18 +31,7 @@ pub fn render(ui: &mut egui::Ui, ctx: &egui::Context, win: &mut Window) {
     )
     .clicked()
     {
-        if let Some(path) = rfd::FileDialog::new()
-            .add_filter("Image", &["png", "jpg", "jpeg", "bmp", "gif", "tiff"])
-            .set_title("Open Image")
-            .pick_file()
-        {
-            win.input_path = Some(path.display().to_string());
-            let img = open_image(&win.input_path.as_ref().unwrap());
-            let color_image = dynamic_image_to_color_image(&img);
-            win.image = Some(img);
-            win.original_image = win.image.clone();
-            win.texture = Some(ctx.load_texture("dyn-img", color_image, TextureOptions::default()));
-        }
+        open_image_gui(ctx, win);
     }
 
     ui.add_space(10.0);

@@ -1,4 +1,4 @@
-use crate::tools::{img::dynamic_image_to_color_image, open::open_image};
+use crate::tools::open::open_image_gui;
 use crate::window::window::Window;
 use eframe::egui::{self, Align, Color32, FontFamily, FontId, Frame, RichText};
 
@@ -41,20 +41,8 @@ pub fn render(ctx: &egui::Context, win: &mut Window) {
                             )
                             .clicked()
                         {
-                            if let Some(path) = rfd::FileDialog::new()
-                                .add_filter("Image", &["png", "jpg", "jpeg", "bmp", "gif", "tiff"])
-                                .set_title("Open Image")
-                                .pick_file()
-                            {
-                                win.input_path = Some(path.display().to_string());
-                                let img = open_image(win.input_path.as_ref().unwrap());
-                                let color_image = dynamic_image_to_color_image(&img);
-                                win.texture = Some(ctx.load_texture(
-                                    "dyn-img",
-                                    color_image,
-                                    egui::TextureOptions::default(),
-                                ));
-                            }
+                            open_image_gui(ctx, win);
+                            ctx.request_repaint();
                         }
                     });
             });

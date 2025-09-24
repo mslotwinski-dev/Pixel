@@ -1,6 +1,6 @@
 [Setup]
 AppName=Pixel
-AppVersion=1.0.0
+AppVersion=1.1.0
 DefaultDirName={pf}\Pixel
 DefaultGroupName=Pixel
 UninstallDisplayIcon={app}\pixel.exe

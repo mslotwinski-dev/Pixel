@@ -20,7 +20,7 @@ pub fn render(ctx: &egui::Context, win: &mut Window) {
                         ui.set_width(60.0);
 
                         egui::ScrollArea::vertical()
-                            .auto_shrink([false; 2]) // żeby menu nie znikało przy małej zawartości
+                            .auto_shrink([false; 2])
                             .show(ui, |ui| {
                                 ui.set_style(egui::Style {
                                     visuals: egui::Visuals::light(),
@@ -33,7 +33,7 @@ pub fn render(ctx: &egui::Context, win: &mut Window) {
 
                 ui.separator();
                 ui.with_layout(Layout::top_down(egui::Align::Center), |ui| {
-                    image::render(ui, win)
+                    image::render(ctx, ui, win)
                 });
             });
         });

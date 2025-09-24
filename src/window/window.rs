@@ -1,4 +1,4 @@
-use eframe::egui::{FontData, FontDefinitions, FontFamily, TextureHandle, TextureOptions};
+use eframe::egui::{FontData, FontDefinitions, FontFamily, TextureHandle, TextureOptions, Vec2};
 use image::DynamicImage;
 
 use crate::tools::img::dynamic_image_to_color_image;
@@ -11,6 +11,9 @@ pub struct Window {
     pub image: Option<DynamicImage>,
     pub original_image: Option<DynamicImage>,
     pub texture: Option<TextureHandle>,
+
+    pub zoom: f32,
+    pub offset: Vec2,
 
     pub dialogs: Dialogs,
 }
@@ -31,9 +34,9 @@ impl Window {
 
         cc.egui_ctx.set_fonts(fonts);
 
-        if let Some(input_path) = &input_path {
-            let img = open_image(input_path);
-
+        if let Some(input_path) = &input_path
+            && let Some(img) = open_image(input_path)
+        {
             let color_image = dynamic_image_to_color_image(&img);
             let texture =
                 cc.egui_ctx
@@ -45,6 +48,8 @@ impl Window {
                 original_image: Some(img),
                 texture: Some(texture),
                 mode: 0,
+                zoom: 1.0,
+                offset: Vec2::ZERO,
                 dialogs: Dialogs::default(),
             };
         }
@@ -55,6 +60,8 @@ impl Window {
             original_image: None,
             texture: None,
             mode: 0,
+            zoom: 1.0,
+            offset: Vec2::ZERO,
             dialogs: Dialogs::default(),
         }
     }
@@ -76,6 +83,8 @@ impl Default for Window {
             original_image: None,
             texture: None,
             mode: 0,
+            zoom: 1.0,
+            offset: Vec2::ZERO,
             dialogs: Dialogs::default(),
         }
     }

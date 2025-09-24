@@ -24,7 +24,7 @@ pub fn dynamic_image_to_color_image(img: &DynamicImage) -> ColorImage {
 //     texture
 // }
 
-pub fn fit_size(original: egui::Vec2, max: egui::Vec2) -> egui::Vec2 {
-    let scale = (max.x / original.x).min(max.y / original.y).min(1.0);
-    original * scale
-}
+// pub fn fit_size(original: egui::Vec2, max: egui::Vec2) -> egui::Vec2 {
+//     let scale = (max.x / original.x).min(max.y / original.y).min(1.0);
+//     original * scale
+// }

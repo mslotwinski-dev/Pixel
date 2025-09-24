@@ -1,4 +1,4 @@
-#![windows_subsystem = "windows"]
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod cli;
 mod image;
@@ -18,8 +18,6 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     if args.len() == 1 {
-        // Log::error("No arguments provided. Use --help for assistance.");
-
         run(None).unwrap();
         return;
     }

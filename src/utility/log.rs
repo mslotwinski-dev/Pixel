@@ -19,8 +19,12 @@ impl Log {
     }
 
     pub fn error(message: &str) {
-        panic!("{} - {}", "Error".red().bold(), message);
+        println!("{} - {}", "Error".red().bold(), message);
     }
+
+    // pub fn critical_error(message: &str) {
+    //     panic!("{} - {}", "Critical Error".magenta().bold(), message);
+    // }
 
     pub fn command(command: &str, message: &str) {
         let prefix = "pixel".bold();
