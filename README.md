@@ -1,4 +1,5 @@
-# 🎨 Pixel
+<img src="public/readme_icon.png" />
+
 
 **Pixel** is a fast and lightweight **image editor** written in **Rust**, available with both a **GUI** and **CLI**.  
 It provides powerful yet simple tools for image processing – from basic operations (resize, crop, rotate) to built-in Instagram-style filters.
